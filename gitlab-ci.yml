@@ -1,0 +1,13 @@
+java:
+  stage: test
+  before_script:
+  - export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+  - export M2_HOME=/opt/apache-maven
+  - export M2=$M2_HOME/bin
+  - export PATH=$M2:$PATH
+  script:
+  - cd Backend
+  - mvn verify
+  only:
+  - merge-requests
+  - branches
