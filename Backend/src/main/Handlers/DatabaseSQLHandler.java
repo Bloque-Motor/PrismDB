@@ -1,6 +1,7 @@
 package Handlers;
 
 import Entities.DirUser;
+import org.jetbrains.annotations.Contract;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,6 +20,21 @@ import java.util.ArrayList;
  *
  * Every method to get or post information from/to the
  * database must go here.
+ *
+ * -- HOW TO USE --
+ * DatabaseSQLHandler
+ *
+ * DatabaseSQLHandler.addUser(new DirUser());
+ * DatabaseSQLHandler.removeUser(DirUser.KeyType.FULLNAME, "Pepe, Martinez")
+ * DatabaseSQLHandler.removeUser(DirUser.KeyType.DNI, "000111222F")
+ * DatabaseSQLHandler.removeUser(DirUser.KeyType.EMAIL, "example@gmail.com")
+ * DatabaseSQLHandler.updateUser(DirUser.KeyType.DNI, "000111222-A", "44455566-B")
+ * DatabaseSQLHandler.updateUser(DirUser.KeyType.TELEPHONE, "123456789", "+34666555444")
+ * DatabaseSQLHandler.getUsers();
+ * DatabaseSQLHandler.setAutoDisconnect(true);
+ *
+ * -- WIP --
+ * DatabaseSQLHandler.grepUser()|getUser();
  */
 public class DatabaseSQLHandler {
 
@@ -34,8 +50,14 @@ public class DatabaseSQLHandler {
     private static ResultSet rs;
     private static CallableStatement cs;
 
-    public static void connect() {
+    // Opening and closing the connection are expensive operations,
+    // it is recommended not to close it at the end of an operation
+    // if many queries are made frequently.
+    private static boolean autoDisconnect = false;
+
+    private static void connect() {
         try {
+            // Doesnt open the connection twice
             if (conn != null && !conn.isClosed()) return;
             conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + dbname + properties, user, password);
             conn.setAutoCommit(false);
@@ -57,13 +79,13 @@ public class DatabaseSQLHandler {
         }
     }
 
-    // Entities methods
+    // PUBLIC METHODS
 
     public static boolean addUser(DirUser user) {
         int status;
-        connect();
 
         try {
+            connect();
             cs = conn.prepareCall("{call adduser(?,?,?,?,?,?)}");
             cs.registerOutParameter(1, Types.INTEGER);
             cs.setString(2, user.getName());
@@ -86,17 +108,25 @@ public class DatabaseSQLHandler {
             return false;
         }
 
+        if (autoDisconnect) {
+            disconnect();
+        }
+
         return true;
     }
 
-    public static boolean removeUserById(int uid) {
-        int status;
-        connect();
+    public static boolean removeUser(DirUser.KeyType key, String target) {
+        int status, id;
 
         try {
+            connect();
+
+            id = getId(key, target);
+            if (id < 1) return false;
+
             cs = conn.prepareCall("{call removeuser(?, ?)}");
             cs.registerOutParameter(1, Types.INTEGER);
-            cs.setInt(2, uid);
+            cs.setInt(2, id);
             cs.execute();
             conn.commit();
 
@@ -112,34 +142,28 @@ public class DatabaseSQLHandler {
             return false;
         }
 
+        if (autoDisconnect) {
+            disconnect();
+        }
+
         return true;
     }
 
-    public static boolean removeUserByFullName(String name, String surname) {
-        int status;
-        connect();
-        int uid = getUserByFullName(name, surname).getId();
+    public static boolean updateUser(DirUser.KeyType key, String target, String newvalue) {
+        int id = 0;
 
-        try {
-            cs = conn.prepareCall("{call removeuser(?, ?)}");
-            cs.registerOutParameter(1, Types.INTEGER);
-            cs.setInt(2, uid);
-            cs.execute();
-            conn.commit();
-
-            status = cs.getInt(1);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-            status = -1;
+        if (isValidKeyValue(key, newvalue)) {
+            id = getId(key, target);
+            if (id < 1) return false;
+            callAppropriateDatabaseUpdateMethod(id, key, newvalue);
+            return true;
         }
 
-        if (status != 0) {
-            rollbackQuery();
-            return false;
+        if (autoDisconnect) {
+            disconnect();
         }
 
-        return true;
+        return false;
     }
 
     public static DirUser[] getUsers() {
@@ -153,13 +177,12 @@ public class DatabaseSQLHandler {
             conn.commit();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
                 String dni = rs.getString("dni");
                 String telephone = rs.getString("telephone");
                 String email = rs.getString("email");
-                DirUser user = new DirUser(id, name, surname, dni, telephone, email);
+                DirUser user = new DirUser(name, surname, dni, telephone, email);
                 userslist.add(user);
             }
         } catch (SQLException e) {
@@ -169,10 +192,15 @@ public class DatabaseSQLHandler {
             return null;
         }
 
+        if (autoDisconnect) {
+            disconnect();
+        }
+
         return userslist.toArray(new DirUser[userslist.size()]);
     }
 
-    public static DirUser getUserById(int id) {
+    // TODO change or remove
+    private static DirUser getUserById(int id) {
         DirUser user = null;
         String q = "SELECT * FROM " + dbname + ".users WHERE id = " + id;
 
@@ -188,7 +216,7 @@ public class DatabaseSQLHandler {
                 String dni = rs.getString("dni");
                 String telephone = rs.getString("telephone");
                 String email = rs.getString("email");
-                user = new DirUser(id, name, surname, dni, telephone, email);
+                user = new DirUser(name, surname, dni, telephone, email);
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -200,9 +228,43 @@ public class DatabaseSQLHandler {
         return user;
     }
 
-    public static DirUser getUserByFullName(String name, String surname) {
-        DirUser user = null;
-        String q = "SELECT * FROM " + dbname + ".users WHERE name = " + name + " AND surname = " + surname;
+    // Greps a user with user specified params
+    public static DirUser grepUser() {
+        return null;
+    }
+
+    public static void setAutoDisconnect(boolean autoDisconnect) {
+        DatabaseSQLHandler.autoDisconnect = autoDisconnect;
+    }
+
+    // PRIVATE METHODS -- OPAQUE FOR THE USER.
+
+    private static int getId(DirUser.KeyType key, String target) {
+        int id = 0;
+        String q = "SELECT id FROM " + dbname + ".users WHERE ";
+
+        switch (key) {
+            case FULLNAME:
+                String name = target.split(",")[0];
+                String surname = target.split(",")[1];
+                q += " name = " + name + " AND surname = " + surname;
+                break;
+
+            case DNI:
+                q += " dni = " + target;
+                break;
+
+            case TELEPHONE:
+                q += " telephone = " + target;
+                break;
+
+            case EMAIL:
+                q += " email = " + target;
+                break;
+
+            default:
+                throw new IllegalArgumentException();
+        }
 
         try {
             connect();
@@ -211,23 +273,76 @@ public class DatabaseSQLHandler {
             conn.commit();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String dni = rs.getString("dni");
-                String telephone = rs.getString("telephone");
-                String email = rs.getString("email");
-                user = new DirUser(id, name, surname, dni, telephone, email);
+                id = rs.getInt("id");
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
             rollbackQuery();
-            return null;
+            return -1;
         }
 
-        return user;
+        if (autoDisconnect) {
+            disconnect();
+        }
+
+        return id;
     }
 
-    public static boolean updateUserName(int id, String newname) {
+    private static boolean isValidKeyValue(DirUser.KeyType key, String value) {
+        switch (key) {
+            case FULLNAME:
+                String name = value.split(",")[0];
+                String surname = value.split(",")[1];
+                if (name.equals("") || surname.equals("")) return false;
+                break;
+
+            case DNI:
+                if (!DirUser.isDni(value)) return false;
+                break;
+
+            case TELEPHONE:
+                if (!DirUser.isTelephone(value)) return false;
+                break;
+
+            case EMAIL:
+                if (!DirUser.isEmail(value)) return false;
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid parameter key: '" + key + "'");
+        }
+        return true;
+    }
+
+    // Call update in db format with user specified params
+    private static void callAppropriateDatabaseUpdateMethod(int id, DirUser.KeyType key, String newvalue) {
+        switch (key) {
+            case FULLNAME:
+                String name = newvalue.split(",")[0];
+                String surname = newvalue.split(",")[1];
+                updateUserName(id, name);
+                updateUserSurname(id, surname);
+                break;
+
+            case DNI:
+                updateUserDni(id, newvalue);
+                break;
+
+            case TELEPHONE:
+                updateUserTelephone(id, newvalue);
+                break;
+
+            case EMAIL:
+                updateUserEmail(id, newvalue);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid parameter key: '" + key + "'");
+        }
+    }
+
+    private static boolean updateUserName(int id, String newname) {
         int status;
         connect();
 
@@ -254,7 +369,7 @@ public class DatabaseSQLHandler {
         return true;
     }
 
-    public static boolean updateUserSurname(int id, String newsurname) {
+    private static boolean updateUserSurname(int id, String newsurname) {
         int status;
         connect();
 
@@ -281,7 +396,7 @@ public class DatabaseSQLHandler {
         return true;
     }
 
-    public static boolean updateUserDni(int id, String newdni) {
+    private static boolean updateUserDni(int id, String newdni) {
         int status;
         connect();
 
@@ -308,7 +423,7 @@ public class DatabaseSQLHandler {
         return true;
     }
 
-    public static boolean updateUserTelephone(int id, String newtelephone) {
+    private static boolean updateUserTelephone(int id, String newtelephone) {
         int status;
         connect();
 
@@ -335,7 +450,7 @@ public class DatabaseSQLHandler {
         return true;
     }
 
-    public static boolean updateUserEmail(int id, String newemail) {
+    private static boolean updateUserEmail(int id, String newemail) {
         int status;
         connect();
 
@@ -361,7 +476,6 @@ public class DatabaseSQLHandler {
 
         return true;
     }
-
 
     private static void rollbackQuery() {
         if (conn != null) {

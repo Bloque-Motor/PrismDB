@@ -1,16 +1,23 @@
 package Entities;
 
+import Handlers.DatabaseSQLHandler;
+
 public class DirUser {
 
-    private int id;
+    public static enum KeyType {
+        FULLNAME, // "Name, Surname"
+        DNI,
+        TELEPHONE,
+        EMAIL
+    };
+
     private String name;
     private String surname;
     private String dni;
     private String telephone;
     private String email;
 
-    public DirUser(int id, String name, String surname, String dni, String telephone, String email) {
-        this.id = id;
+    public DirUser(String name, String surname, String dni, String telephone, String email) {
         this.name = name;
         this.surname = surname;
         this.dni = dni;
@@ -19,12 +26,7 @@ public class DirUser {
     }
 
     public DirUser() {
-        this(0, "", "", "", "", "");
-    }
-
-
-    public int getId() {
-        return id;
+        this("", "", "", "", "");
     }
 
     public String getName() {
@@ -45,10 +47,6 @@ public class DirUser {
 
     public String getEmail() {
         return email;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setName(String name) {
