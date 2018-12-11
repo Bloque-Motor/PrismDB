@@ -2,8 +2,8 @@
 -- RMI Users Dir
 -- SQL initialization script: Creates and initializes the sql environment, user, database and tables
 --
--- Mon 03 Dec 2018
--- v0.1
+-- Tue 11 Dec 2018
+-- v0.2
 --
 -- Database: prismdb
 -- Admin: dir_admin
@@ -40,11 +40,9 @@ CREATE TABLE users (
   `surname` VARCHAR(50) NOT NULL DEFAULT '',
   `dni` VARCHAR(10) NOT NULL DEFAULT '',
   `telephone` VARCHAR(11) NOT NULL DEFAULT '',
-  `email` VARCHAR(100) NOT NULL DEFAULT '',  
-  UNIQUE(`name`),
+  `email` VARCHAR(100) NOT NULL DEFAULT '',
   UNIQUE(`dni`),
   UNIQUE(`telephone`),
   UNIQUE(`email`),
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-

@@ -4,6 +4,13 @@ import Interfaces.People;
 
 public class Person implements People {
 
+    public static enum KeyType {
+        FULLNAME, // "Name, Surname"
+        DNI,
+        TELEPHONE,
+        EMAIL
+    };
+
     private String name;
     private String surname;
     private String dni;
