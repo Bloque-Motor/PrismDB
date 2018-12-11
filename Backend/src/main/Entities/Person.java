@@ -1,30 +1,21 @@
 package Entities;
 
-public class DirUser {
+import Interfaces.People;
 
-    private int id;
+public class Person implements People {
+
     private String name;
     private String surname;
     private String dni;
     private String telephone;
     private String email;
 
-    public DirUser(int id, String name, String surname, String dni, String telephone, String email) {
-        this.id = id;
+    public Person(String name, String surname, String dni, String telephone, String email) {
         this.name = name;
         this.surname = surname;
         this.dni = dni;
         this.telephone = telephone;
         this.email = email;
-    }
-
-    public DirUser() {
-        this(0, "", "", "", "", "");
-    }
-
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {
@@ -45,10 +36,6 @@ public class DirUser {
 
     public String getEmail() {
         return email;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setName(String name) {

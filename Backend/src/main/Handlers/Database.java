@@ -1,6 +1,6 @@
 package Handlers;
 
-import Entities.DirUser;
+import Entities.Person;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Every method to get or post information from/to the
  * database must go here.
  */
-public class DatabaseSQLHandler {
+public class Database {
 
     private static String host = "localhost";
     private static int port = 3306;
@@ -59,7 +59,7 @@ public class DatabaseSQLHandler {
 
     // Entities methods
 
-    public static boolean addUser(DirUser user) {
+    public static boolean addUser(Person user) {
         int status;
         connect();
 
@@ -142,8 +142,8 @@ public class DatabaseSQLHandler {
         return true;
     }
 
-    public static DirUser[] getUsers() {
-        ArrayList<DirUser> userslist = new ArrayList<DirUser>(0);
+    public static Person[] getUsers() {
+        ArrayList<Person> userslist = new ArrayList<Person>(0);
         String q = "SELECT * FROM " + dbname + ".users";
 
         try {
@@ -159,7 +159,7 @@ public class DatabaseSQLHandler {
                 String dni = rs.getString("dni");
                 String telephone = rs.getString("telephone");
                 String email = rs.getString("email");
-                DirUser user = new DirUser(id, name, surname, dni, telephone, email);
+                Person user = new Person(name, surname, dni, telephone, email);
                 userslist.add(user);
             }
         } catch (SQLException e) {
@@ -169,11 +169,11 @@ public class DatabaseSQLHandler {
             return null;
         }
 
-        return userslist.toArray(new DirUser[userslist.size()]);
+        return userslist.toArray(new Person[userslist.size()]);
     }
 
-    public static DirUser getUserById(int id) {
-        DirUser user = null;
+    public static Person getUserById(int id) {
+        Person user = null;
         String q = "SELECT * FROM " + dbname + ".users WHERE id = " + id;
 
         try {
@@ -188,7 +188,7 @@ public class DatabaseSQLHandler {
                 String dni = rs.getString("dni");
                 String telephone = rs.getString("telephone");
                 String email = rs.getString("email");
-                user = new DirUser(id, name, surname, dni, telephone, email);
+                user = new Person(name, surname, dni, telephone, email);
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -200,8 +200,8 @@ public class DatabaseSQLHandler {
         return user;
     }
 
-    public static DirUser getUserByFullName(String name, String surname) {
-        DirUser user = null;
+    public static Person getUserByFullName(String name, String surname) {
+        Person user = null;
         String q = "SELECT * FROM " + dbname + ".users WHERE name = " + name + " AND surname = " + surname;
 
         try {
@@ -215,7 +215,7 @@ public class DatabaseSQLHandler {
                 String dni = rs.getString("dni");
                 String telephone = rs.getString("telephone");
                 String email = rs.getString("email");
-                user = new DirUser(id, name, surname, dni, telephone, email);
+                user = new Person(name, surname, dni, telephone, email);
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
