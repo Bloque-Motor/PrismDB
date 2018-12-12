@@ -68,9 +68,8 @@ public class Database implements DBHandler {
         }
     }
 
-    @Override
-    public boolean addUser(People user) {
-        boolean error = false;
+    public static boolean addUser(People user) {
+        boolean error;
 
         try {
             connect();
@@ -102,9 +101,8 @@ public class Database implements DBHandler {
         return !error;
     }
 
-    @Override
-    public boolean deleteUser(People user) {
-        boolean error = false;
+    public static boolean deleteUser(People user) {
+        boolean error;
 
         try {
             String dni = user.getDni();
@@ -134,9 +132,8 @@ public class Database implements DBHandler {
         return !error;
     }
 
-    @Override
-    public boolean updateUser(String dniOld, People user) {
-        boolean error = false;
+    public static boolean updateUser(String dniOld, People user) {
+        boolean error;
 
         try {
             connect();
@@ -169,17 +166,16 @@ public class Database implements DBHandler {
         return !error;
     }
 
-    @Override
-    public People search(Map parameters) {
+    public static People search(Map parameters) {
         if (parameters.size() == 0) return null;
 
         Person user = null;
         Iterator<Map.Entry<Person.KeyType, String>> it = parameters.entrySet().iterator();
-        Map.Entry<Person.KeyType, String> entry = null;
+        Map.Entry<Person.KeyType, String> entry;
         Person.KeyType ekey;
         String evalue, q = " SELECT * FROM " + dbname + ".users WHERE ";
-        ArrayList<String> qattrs = new ArrayList<String>();
-        ArrayList<String> qvalues = new ArrayList<String>();
+        ArrayList<String> qattrs = new ArrayList<>();
+        ArrayList<String> qvalues = new ArrayList<>();
 
         while (it.hasNext()) {
             entry = it.next();
@@ -221,8 +217,6 @@ public class Database implements DBHandler {
             }
         }
 
-        q += " LIMIT 1";
-
         try {
             connect();
             ps = conn.prepareStatement(q);
@@ -251,7 +245,7 @@ public class Database implements DBHandler {
     }
 
     public static Person[] getUsers() {
-        ArrayList<Person> userslist = new ArrayList<Person>(0);
+        ArrayList<Person> userslist = new ArrayList<>(0);
         String q = "SELECT * FROM " + dbname + ".users";
 
         try {
@@ -281,7 +275,7 @@ public class Database implements DBHandler {
         }
 
 
-        return userslist.toArray(new Person[userslist.size()]);
+        return userslist.toArray(new Person[0]);
     }
 
     public static void setAutoDisconnect(boolean autoDisconnect) {

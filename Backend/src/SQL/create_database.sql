@@ -40,7 +40,5 @@ CREATE TABLE users (
   `surname` VARCHAR(50) NOT NULL DEFAULT '',
   `telephone` VARCHAR(15) NOT NULL DEFAULT '',
   `email` VARCHAR(100) NOT NULL DEFAULT '',
-  UNIQUE(`telephone`),
-  UNIQUE(`email`),
   PRIMARY KEY(`dni`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
