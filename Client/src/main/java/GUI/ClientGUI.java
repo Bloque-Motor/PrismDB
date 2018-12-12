@@ -18,4 +18,5 @@ public class ClientGUI extends JFrame {
     public JLabel phoneLabel;
     public JLabel emailLabel;
     public JPanel panelUser;
+    private JToolBar menu;
 }

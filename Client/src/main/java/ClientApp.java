@@ -58,6 +58,28 @@ public class ClientApp {
         return res;
     }
 
+    public void updateUser (String oldDni, String name, String surname, String dni, String phone, String email){
+        Registry registry = null;
+        try {
+            registry = LocateRegistry.getRegistry();
+            Prism stub = (Prism) registry.lookup("Prism");
+            stub.updateUser(oldDni, name, surname, dni, phone, email);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteUser (String dni){
+        Registry registry = null;
+        try {
+            registry = LocateRegistry.getRegistry();
+            Prism stub = (Prism) registry.lookup("Prism");
+            stub.deleteUser(dni);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void addUser (String name, String surname, String dni, String phone, String email){
         Registry registry = null;
         try {
