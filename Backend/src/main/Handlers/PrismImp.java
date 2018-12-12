@@ -5,6 +5,7 @@ import Interfaces.Prism;
 import Handlers.*;
 
 import java.rmi.RemoteException;
+import java.util.Map;
 
 public class PrismImp implements Prism {
     @Override
@@ -13,7 +14,7 @@ public class PrismImp implements Prism {
     }
 
     @Override
-    public Person searchUser(String query) throws RemoteException {
+    public Person searchUser(Map params) throws RemoteException {
         return null;
     }
 
