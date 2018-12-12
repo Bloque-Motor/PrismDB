@@ -17,11 +17,11 @@ public interface DBHandler {
     // TODO there should be an update method for each parameter, and not a generic one,
     //  it's more expensive and inefficient
 
-    void addUser(People user) throws SQLException;
+    public boolean addUser(People user);
 
-    void deleteUser(People user) throws SQLException;
+    public boolean deleteUser(People user);
 
-    void updateUser(String dniOld, People user) throws SQLException;
+    public boolean updateUser(String dniOld, People user);
 
-    People search(Map parameters) throws SQLException;
+    public People search(Map parameters);
 }
