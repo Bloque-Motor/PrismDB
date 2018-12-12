@@ -4,8 +4,10 @@ import Entities.Person;
 import Interfaces.DBHandler;
 import Interfaces.People;
 
+import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 /*
@@ -69,7 +71,7 @@ public class Database implements DBHandler {
         }
     }
 
-    public static void disconnect() {
+    private static void disconnect() {
         try {
             if (conn != null) conn.close();
             if (ps != null) ps.close();
@@ -83,92 +85,142 @@ public class Database implements DBHandler {
 
     // PUBLIC METHODS
 
-    public static boolean addUser(Person user) {
-        int status;
-
+    @Override
+    public void addUser(People user) throws SQLException {
         try {
             connect();
             cs = conn.prepareCall("{call adduser(?,?,?,?,?,?)}");
             cs.registerOutParameter(1, Types.INTEGER);
-            cs.setString(2, user.getName());
-            cs.setString(3, user.getSurname());
-            cs.setString(4, user.getDni());
+            cs.setString(2, user.getDni());
+            cs.setString(3, user.getName());
+            cs.setString(4, user.getSurname());
             cs.setString(5, user.getTelephone());
             cs.setString(6, user.getEmail());
             cs.execute();
             conn.commit();
-
-            status = cs.getInt(1);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
-            status = -1;
-        }
-
-        if (status != 0) {
-            rollbackQuery();
-            return false;
         }
 
         if (autoDisconnect) {
             disconnect();
         }
-
-        return true;
     }
 
-    public static boolean removeUser(Person.KeyType key, String target) {
-        int status, id;
-
+    @Override
+    public void deleteUser(People user) throws SQLException {
         try {
+            String dni = user.getDni();
+
             connect();
-
-            id = getId(key, target);
-            if (id < 1) return false;
-
             cs = conn.prepareCall("{call removeuser(?, ?)}");
             cs.registerOutParameter(1, Types.INTEGER);
-            cs.setInt(2, id);
+            cs.setString(2, dni);
             cs.execute();
             conn.commit();
-
-            status = cs.getInt(1);
-        } catch (SQLException e) {
+        } catch (RemoteException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
-            status = -1;
-        }
-
-        if (status != 0) {
-            rollbackQuery();
-            return false;
         }
 
         if (autoDisconnect) {
             disconnect();
         }
-
-        return true;
     }
 
-    public static boolean updateUser(Person.KeyType key, String target, String newvalue) {
-        int id = 0;
+    // TODO
+    @Override
+    public void updateUser(String dniOld, People user) throws SQLException {
+    }
+
+    @Override
+    public People search(Map parameters) throws SQLException {
+        if (parameters.size() == 0) return null;
+
+        Person user = null;
+        Iterator<Map.Entry<Person.KeyType, String>> it = parameters.entrySet().iterator();
+        Map.Entry<Person.KeyType, String> entry = null;
+        Person.KeyType ekey;
+        String evalue, q = " SELECT * FROM " + dbname + ".users WHERE ";
+        ArrayList<String> qattrs = new ArrayList<String>();
+        ArrayList<String> qvalues = new ArrayList<String>();
+
+        while (it.hasNext()) {
+            entry = it.next();
+            ekey = entry.getKey();
+            evalue = entry.getValue();
+
+            switch (ekey) {
+                case NAME:
+                    qattrs.add("name = ?");
+                    break;
+
+                case SURNAME:
+                    qattrs.add("surname = ?");
+                    break;
+
+                case DNI:
+                    qattrs.add("dni = ?");
+                    break;
+
+                case TELEPHONE:
+                    qattrs.add("telephone = ?");
+                    break;
+
+                case EMAIL:
+                    qattrs.add("email = ?");
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid parameter key");
+            }
+
+            qvalues.add(evalue);
+        }
+
+        for (int i = 0, size = qattrs.size(); i < size; i++) {
+            q += " " + qattrs.get(i) + " ";
+            if (i < size - 1) {
+                q += " AND ";
+            }
+        }
+
+        q += " LIMIT 1";
+
+        ps = conn.prepareStatement(q);
+
+        for (int i = 0, size = qvalues.size(); i < size; i++) {
+            ps.setString(i + 1, qvalues.get(i));
+        }
+
+        rs = ps.executeQuery();
+        conn.commit();
+
+        while (rs.next()) {
+            String dni = rs.getString("dni");
+            String name = rs.getString("name");
+            String surname = rs.getString("surname");
+            String telephone = rs.getString("telephone");
+            String email = rs.getString("email");
+            user = new Person(dni, name, surname, telephone, email);
+        }
+
+        return user;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // NOTE Commented methods to avoid errors, will be eliminated or changed later
+
+    public static void updateUser(String dniOld, Person user) throws SQLException {
+        /*int id = 0;
 
         if (isValidKeyValue(key, newvalue)) {
             id = getId(key, target);
             if (id < 1) return false;
-            callAppropriateDatabaseUpdateMethod(id, key, newvalue);
+            callAppropriateDatabaseUpdateMethod(dni, key, newvalue);
             return true;
-        }
-    }
-
-    public static Person[] getUsers() {
-        ArrayList<Person> userslist = new ArrayList<Person>(0);
-        if (autoDisconnect) {
-            disconnect();
-        }
-
-        return false;
+        }*/
     }
 
     public static Person[] getUsers() {
@@ -205,76 +257,14 @@ public class Database implements DBHandler {
         return userslist.toArray(new Person[userslist.size()]);
     }
 
-
-    public static Person getUserByFullName(String name, String surname) {
-        Person user = null;
-        String q = "SELECT * FROM " + dbname + ".users WHERE name = " + name + " AND surname = " + surname;
-    }
-
-
     public static void setAutoDisconnect(boolean autoDisconnect) {
         Database.autoDisconnect = autoDisconnect;
     }
 
     // PRIVATE METHODS -- OPAQUE FOR THE USER.
 
-    private static int getId(Person.KeyType key, String target) {
-        int id = 0;
-        String q = "SELECT id FROM " + dbname + ".users WHERE ";
-
-        switch (key) {
-            case FULLNAME:
-                String name = target.split(",")[0];
-                String surname = target.split(",")[1];
-                q += " name = " + name + " AND surname = " + surname;
-                break;
-
-            case DNI:
-                q += " dni = " + target;
-                break;
-
-            case TELEPHONE:
-                q += " telephone = " + target;
-                break;
-
-            case EMAIL:
-                q += " email = " + target;
-                break;
-
-            default:
-                throw new IllegalArgumentException();
-        }
-
-        try {
-            connect();
-            ps = conn.prepareStatement(q);
-            rs = ps.executeQuery();
-            conn.commit();
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String dni = rs.getString("dni");
-                String telephone = rs.getString("telephone");
-                String email = rs.getString("email");
-                user = new Person(name, surname, dni, telephone, email);
-                id = rs.getInt("id");
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-            rollbackQuery();
-            return -1;
-        }
-
-        if (autoDisconnect) {
-            disconnect();
-        }
-
-        return id;
-    }
-
     private static boolean isValidKeyValue(Person.KeyType key, String value) {
-        switch (key) {
+        /*switch (key) {
             case FULLNAME:
                 String name = value.split(",")[0];
                 String surname = value.split(",")[1];
@@ -295,13 +285,13 @@ public class Database implements DBHandler {
 
             default:
                 throw new IllegalArgumentException("Invalid parameter key: '" + key + "'");
-        }
+        }*/
         return true;
     }
 
     // Call update in db format with user specified params
     private static void callAppropriateDatabaseUpdateMethod(int id, Person.KeyType key, String newvalue) {
-        switch (key) {
+        /*switch (key) {
             case FULLNAME:
                 String name = newvalue.split(",")[0];
                 String surname = newvalue.split(",")[1];
@@ -323,7 +313,7 @@ public class Database implements DBHandler {
 
             default:
                 throw new IllegalArgumentException("Invalid parameter key: '" + key + "'");
-        }
+        }*/
     }
 
     private static boolean updateUserName(int id, String newname) {
@@ -470,25 +460,5 @@ public class Database implements DBHandler {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void addUser(People user) throws SQLException {
-
-    }
-
-    @Override
-    public void deleteUser(People user) throws SQLException {
-
-    }
-
-    @Override
-    public void updateUser(String dniOld, People user) throws SQLException {
-
-    }
-
-    @Override
-    public People search(Map parameters) throws SQLException {
-        return null;
     }
 }

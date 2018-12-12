@@ -4,7 +4,7 @@ public interface People extends java.rmi.Remote {
 
     String getName() throws java.rmi.RemoteException;
 
-    String getSurname()throws java.rmi.RemoteException;
+    String getSurname() throws java.rmi.RemoteException;
 
     String getDni() throws java.rmi.RemoteException;
 

@@ -5,22 +5,23 @@ import Interfaces.People;
 public class Person implements People {
 
     public static enum KeyType {
-        FULLNAME, // "Name, Surname"
+        NAME,
+        SURNAME,
         DNI,
         TELEPHONE,
         EMAIL
     };
 
+    private String dni;
     private String name;
     private String surname;
-    private String dni;
     private String telephone;
     private String email;
 
-    public Person(String name, String surname, String dni, String telephone, String email) {
+    public Person(String dni, String name, String surname, String telephone, String email) {
+        this.dni = dni;
         this.name = name;
         this.surname = surname;
-        this.dni = dni;
         this.telephone = telephone;
         this.email = email;
     }
