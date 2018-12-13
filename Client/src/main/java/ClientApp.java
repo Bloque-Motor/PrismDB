@@ -21,22 +21,11 @@ public class ClientApp {
 //                gui.setVisible(true);
 //            }
 //        });
+        ConsoleMenus.mainMenu();
+
     }
 
-    public static People search() {
-        //String name, String surname, String dni, String phone, String email
-        System.out.println("Introduzca un nombre: ");
-        Scanner scanner = new Scanner(System.in);
-        String name = scanner.nextLine();
-        System.out.println("Introduzca un apellido: ");
-        String surname = scanner.nextLine();
-        System.out.println("Introduzca un dni: ");
-        String dni = scanner.nextLine();
-        System.out.println("Introduzca un telefono: ");
-        String phone = scanner.nextLine();
-        System.out.println("Introduzca un email: ");
-        String email = scanner.nextLine();
-
+    public static People search(String name, String surname, String dni, String phone, String email) {
         Map<String, String> searchParam = new HashMap<>();
 
         if (!name.equals("")) searchParam.put("name", name);
@@ -50,7 +39,7 @@ public class ClientApp {
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
-            res = stub.searchUser(name);
+            res = stub.searchUser(searchParam);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -58,7 +47,7 @@ public class ClientApp {
         return res;
     }
 
-    public void updateUser (String oldDni, String name, String surname, String dni, String phone, String email){
+    public static void updateUser(String oldDni, String name, String surname, String dni, String phone, String email){
         Registry registry = null;
         try {
             registry = LocateRegistry.getRegistry();
@@ -69,7 +58,7 @@ public class ClientApp {
         }
     }
 
-    public void deleteUser (String dni){
+    public static void deleteUser(String dni){
         Registry registry = null;
         try {
             registry = LocateRegistry.getRegistry();
@@ -80,7 +69,7 @@ public class ClientApp {
         }
     }
 
-    public void addUser (String name, String surname, String dni, String phone, String email){
+    public static void addUser(String name, String surname, String dni, String phone, String email){
         Registry registry = null;
         try {
             registry = LocateRegistry.getRegistry();
