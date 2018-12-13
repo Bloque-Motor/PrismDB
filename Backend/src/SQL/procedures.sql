@@ -16,7 +16,7 @@ CREATE PROCEDURE prismdb.adduser(OUT exitstatus INTEGER,
   IN name VARCHAR(50),
   IN surname VARCHAR(50),
   IN telephone VARCHAR(15),
-  IN email VARCHAR(100))
+  IN email VARCHAR(50))
 MODIFIES SQL DATA
 BEGIN
   SET exitstatus = -1;
@@ -61,7 +61,7 @@ CREATE PROCEDURE prismdb.updateuser(OUT exitstatus INTEGER,
   IN newname VARCHAR(50),
   IN newusername VARCHAR(50),
   IN newtelephone VARCHAR(15),
-  IN newemail VARCHAR(100))
+  IN newemail VARCHAR(50))
 MODIFIES SQL DATA
 main:BEGIN
   SET exitstatus = -1;
