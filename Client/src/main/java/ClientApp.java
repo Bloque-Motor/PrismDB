@@ -3,6 +3,7 @@ import Interfaces.Prism;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class ClientApp {
     private static final String SOURCE = "PrismDB Client";
     private static final Logger logger = LogManager.getLogger(ClientApp.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
 
 //        SwingUtilities.invokeLater(new Runnable() {
 //            public void run() {
@@ -57,27 +58,28 @@ public class ClientApp {
         return res;
     }
 
-    static void updateUser(String oldDni, String name, String surname, String dni, String phone, String email) {
-        logger.info(SOURCE, "Attempting to update the person " + oldDni + " with the following new data: " + name + " " + surname + " " + dni + " " + phone + " " + email);
+    static void updateUser(String oldDni, People res) throws RemoteException {
+        logger.info(SOURCE, "Attempting to update the person " + oldDni + " with the following new data: " + res.getName() + " " + res.getSurname() + " " + res.getDni() + " " + res.getTelephone() + " " + res.getEmail());
+
 
         Registry registry;
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
-            stub.updateUser(oldDni, name, surname, dni, phone, email);
+            stub.updateUser(oldDni, res);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    static void deleteUser(String dni) {
-        logger.info(SOURCE, "Attempting to delete person " + dni);
+    static void deleteUser(People res) throws RemoteException {
+        logger.info(SOURCE, "Attempting to delete person " + res.getDni());
 
         Registry registry;
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
-            stub.deleteUser(dni);
+            stub.deleteUser(res);
         } catch (Exception e) {
             e.printStackTrace();
         }

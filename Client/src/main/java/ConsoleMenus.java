@@ -8,7 +8,7 @@ class ConsoleMenus {
     private static Scanner scanner = new Scanner(System.in);
 
 
-    static void mainMenu() {
+    static void mainMenu() throws RemoteException {
 
         System.out.println("////////// Welcome to PrismDB \\\\\\\\\\\\\\\\\\\\");
         System.out.println("Seleccione una opción:");
@@ -32,7 +32,7 @@ class ConsoleMenus {
         }
     }
 
-    private static void addUserMenu() {
+    private static void addUserMenu() throws RemoteException {
         System.out.println("Introduzca el nombre: ");
         String name = scanner.nextLine();
         System.out.println("Introduzca el apellido: ");
@@ -46,7 +46,7 @@ class ConsoleMenus {
         mainMenu();
     }
 
-    private static void searchUserMenu() {
+    private static void searchUserMenu() throws RemoteException {
         System.out.println("Introduzca un nombre: ");
         String name = scanner.nextLine();
         System.out.println("Introduzca un apellido: ");
@@ -59,7 +59,7 @@ class ConsoleMenus {
         String email = scanner.nextLine();
 
         People res = ClientApp.search(name, surname, dni, phone, email);
-        String oldDni = null;
+        //String oldDni = null;
 
         if (res == null) System.out.println("Sin resultados.");
         else {
@@ -67,7 +67,7 @@ class ConsoleMenus {
                 System.out.println("Nombre: " + res.getName());
                 System.out.println("Apellidos: " + res.getSurname());
                 System.out.println("DNI: " + res.getDni());
-                oldDni = res.getDni();
+                //oldDni = res.getDni();
                 System.out.println("Teléfono: " + res.getTelephone());
                 System.out.println("E-mail: " + res.getEmail());
             } catch (RemoteException e) {
@@ -75,28 +75,28 @@ class ConsoleMenus {
             }
         }
 
-        searchUserSubMenu(oldDni);
+        searchUserSubMenu(res);
     }
 
-    private static void searchUserSubMenu(String oldDni) {
-        if (oldDni != null) {
+    private static void searchUserSubMenu(People res) throws RemoteException {
+        if (res != null) {
             System.out.println("Seleccione una opción:");
             System.out.println("1. Editar Usuario \n2. Eliminar Usuario\n3.Menú Principal");
             int option = scanner.nextInt();
             scanner.nextLine();
             switch (option) {
                 case 1: {
-                    editUserMenu(oldDni);
+                    editUserMenu(res);
                 }
                 case 2: {
-                    deleteUserMenu(oldDni);
+                    deleteUserMenu(res);
                 }
                 case 3: {
                     mainMenu();
                 }
                 default: {
                     System.out.println("Error");
-                    searchUserSubMenu(oldDni);
+                    searchUserSubMenu(res);
                 }
             }
         } else {
@@ -119,8 +119,9 @@ class ConsoleMenus {
         }
     }
 
-    private static void editUserMenu(String oldDni) {
+    private static void editUserMenu(People res) throws RemoteException {
         String[] data = editUserSubMenu();
+        String oldDni = res.getDni();
 
         System.out.println("Estos son los nuevos datos: ");
         System.out.println("Nombre: " + data[0]);
@@ -130,16 +131,22 @@ class ConsoleMenus {
         System.out.println("E-mail: " + data[4]);
         System.out.println("¿Es correcto? [y]/n");
         String option = scanner.nextLine();
+        res.setName(data[0]);
+        res.setSurname(data[1]);
+        res.setDni(data[2]);
+        res.setTelephone(data[3]);
+        res.setEmail(data[4]);
+
         switch (option) {
             case "y": {
-                ClientApp.updateUser(oldDni, data[0], data[1], data[2], data[3], data[4]);
+                ClientApp.updateUser(oldDni, res);
                 mainMenu();
             }
             case "n": {
-                editUserMenu(oldDni);
+                editUserMenu(res);
             }
             default: {
-                ClientApp.updateUser(oldDni, data[0], data[1], data[2], data[3], data[4]);
+                ClientApp.updateUser(oldDni, res);
                 mainMenu();
             }
         }
@@ -157,19 +164,19 @@ class ConsoleMenus {
         return res;
     }
 
-    private static void deleteUserMenu(String dni) {
+    private static void deleteUserMenu(People res) throws RemoteException {
         System.out.println("¿Está seguro de que desea eliminar los datos? [y]/n");
         String option = scanner.nextLine();
         switch (option) {
             case "y": {
-                ClientApp.deleteUser(dni);
+                ClientApp.deleteUser(res);
                 mainMenu();
             }
             case "n": {
-                searchUserSubMenu(dni);
+                searchUserSubMenu(res);
             }
             default: {
-                ClientApp.deleteUser(dni);
+                ClientApp.deleteUser(res);
                 mainMenu();
             }
         }
