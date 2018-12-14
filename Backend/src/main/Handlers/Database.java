@@ -1,7 +1,6 @@
 package Handlers;
 
 import Entities.Person;
-import Interfaces.DBHandler;
 import Interfaces.People;
 
 import java.sql.*;
@@ -25,7 +24,7 @@ import java.util.Map;
  * database must go here.
  *
  */
-public class Database implements DBHandler {
+public class Database {
 
     private static String host = "localhost";
     private static int port = 3306;
@@ -244,7 +243,8 @@ public class Database implements DBHandler {
         return user;
     }
 
-    public static Person[] getUsers() {
+    //NOT NECESSARY
+    /*public static Person[] getUsers() {
         ArrayList<Person> userslist = new ArrayList<>(0);
         String q = "SELECT * FROM " + dbname + ".users";
 
@@ -255,9 +255,9 @@ public class Database implements DBHandler {
             conn.commit();
 
             while (rs.next()) {
+                String dni = rs.getString("dni");
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
-                String dni = rs.getString("dni");
                 String telephone = rs.getString("telephone");
                 String email = rs.getString("email");
                 Person user = new Person(name, surname, dni, telephone, email);
@@ -277,7 +277,7 @@ public class Database implements DBHandler {
 
         return userslist.toArray(new Person[0]);
     }
-
+*/
     public static void setAutoDisconnect(boolean autoDisconnect) {
         Database.autoDisconnect = autoDisconnect;
     }

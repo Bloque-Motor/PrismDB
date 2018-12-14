@@ -1,26 +1,29 @@
 package Interfaces;
 
-public interface People extends java.rmi.Remote {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-    String getName() throws java.rmi.RemoteException;
+public interface People extends Remote {
 
-    String getSurname() throws java.rmi.RemoteException;
+    String getName() throws RemoteException;
 
-    String getDni() throws java.rmi.RemoteException;
+    String getSurname() throws RemoteException;
 
-    String getTelephone() throws java.rmi.RemoteException;
+    String getDni() throws RemoteException;
 
-    String getEmail() throws java.rmi.RemoteException;
+    String getTelephone() throws RemoteException;
 
-    void setName(String name) throws java.rmi.RemoteException;
+    String getEmail() throws RemoteException;
 
-    void setSurname(String surname) throws java.rmi.RemoteException;
+    void setName(String name) throws RemoteException;
 
-    void setDni(String dni) throws java.rmi.RemoteException;
+    void setSurname(String surname) throws RemoteException;
 
-    void setTelephone(String telephone) throws java.rmi.RemoteException;
+    void setDni(String dni) throws RemoteException;
 
-    void setEmail(String email) throws java.rmi.RemoteException;
+    void setTelephone(String telephone) throws RemoteException;
+
+    void setEmail(String email) throws RemoteException;
 
     // For Name and Surname
     // Admits compound names and surnames, check them together

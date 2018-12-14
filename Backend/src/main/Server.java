@@ -1,12 +1,34 @@
-import Entities.Person;
-import Handlers.Database;
+import Handlers.PrismImp;
+import Interfaces.Prism;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
-import java.util.HashMap;
+public class Server extends PrismImp {
 
-public class ServerApp {
+    public Server() {}
+    public static void main(String args[]) {
+        try {
+            // Instantiating the implementation class
+            PrismImp obj = new PrismImp();
 
-    public static void main(String[] args) {
-        System.out.println("[*] Database Tests");
+            // Exporting the object of implementation class (here we are exporting the remote object to the stub)
+            Prism stub = (Prism) UnicastRemoteObject.exportObject(obj, 0);
+
+            // Binding the remote object (stub) in the registry
+            Registry registry = LocateRegistry.getRegistry();
+
+            registry.bind("Prism", stub);
+            System.err.println("Server ready");
+        } catch (Exception e) {
+            System.err.println("Server exception: " + e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    //TESTS SHOULD BE DONE WITH JUNIT
+
+        /*System.out.println("[*] Database Tests");
         boolean done;
         Person target1, target2;
 
@@ -31,8 +53,8 @@ public class ServerApp {
         if (!done) System.out.println("[-] Error in addUser, deleteUser, updateUser");
         else if (target1 == null) System.out.println("[-] Error finding target1");
         else if (target2 != null) System.out.println("[-] Error finding target2");
-        else System.out.println("[+] DB Tests Passed!");
-    }
+        else System.out.println("[+] DB Tests Passed!");*/
+
 }
 
 /*
