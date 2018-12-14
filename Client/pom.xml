@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>PrismDBBackend</artifactId>
+        <artifactId>Backend</artifactId>
         <groupId>18_19_grupo18</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
