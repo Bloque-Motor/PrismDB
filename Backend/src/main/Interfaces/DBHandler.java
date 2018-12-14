@@ -1,16 +1,22 @@
 package Interfaces;
 
-import java.sql.SQLException;
 import java.util.Map;
 
 public interface DBHandler {
 
-    void addUser(People user) throws SQLException;
+    static boolean addUser(People user) {
+        return true;
+    }
 
-    void deleteUser(People user) throws SQLException;
+    static boolean deleteUser(People user) {
+        return true;
+    }
 
-    void updateUser(String dniOld, People user) throws SQLException;
+    static boolean updateUser(String dniOld, People user) {
+        return true;
+    }
 
-    People search(Map parameters) throws SQLException;
-
+    static People search(Map parameters) {
+        return null;
+    }
 }
