@@ -1,30 +1,29 @@
 package Handlers;
 
 import Entities.Person;
+import Interfaces.People;
 import Interfaces.Prism;
-import Handlers.*;
 
 import java.rmi.RemoteException;
 import java.util.Map;
 
 public class PrismImp implements Prism {
-    @Override
-    public void addUser(String name, String surname, String dni, String email, String phone) throws RemoteException {
-        Database.addUser(new Person(name, surname, dni, phone, email));
+
+    public PrismImp(){}
+
+    public boolean addUser(String name, String surname, String dni, String email, String phone) throws RemoteException {
+        return Database.addUser(new Person(name, surname, dni, phone, email));
     }
 
-    @Override
-    public Person searchUser(Map params) throws RemoteException {
-        return null;
+    public People searchUser(Map params) throws RemoteException {
+        return Database.search(params);
     }
 
-    @Override
-    public void deleteUser(String dni) throws RemoteException {
-
+    public boolean deleteUser(People user) throws RemoteException {
+        return Database.deleteUser(user);
     }
 
-    @Override
-    public void updateUser(String oldDni, String name, String surname, String dni, String email, String phone) throws RemoteException {
-
+    public boolean updateUser(String oldDni, People user) throws RemoteException {
+        return Database.updateUser(oldDni, user);
     }
 }
