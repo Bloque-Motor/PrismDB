@@ -41,7 +41,10 @@ class ConsoleMenus {
         String phone = phoneInput(null);
         String email = emailInput(null);
 
-        ClientApp.addUser(name, surname, dni, phone, email);
+        boolean res = ClientApp.addUser(name, surname, dni, phone, email);
+
+        if (res) System.out.println("Operacion completada con exito");
+        if (!res) System.out.println("Internal Server Error");
 
         mainMenu();
     }
@@ -137,19 +140,14 @@ class ConsoleMenus {
         res.setTelephone(data[3]);
         res.setEmail(data[4]);
 
-        switch (option) {
-            case "y": {
-                ClientApp.updateUser(oldDni, res);
-                mainMenu();
-            }
-            case "n": {
-                editUserMenu(res);
-            }
-            default: {
-                ClientApp.updateUser(oldDni, res);
-                mainMenu();
-            }
+
+        if ("n".equals(option)) {
+            editUserMenu(res);
         }
+        boolean successful = ClientApp.updateUser(oldDni, res);
+        if (successful) System.out.println("Operacion completada con exito");
+        if (!successful) System.out.println("Internal Server Error");
+        mainMenu();
     }
 
     private static String[] editUserSubMenu() {
@@ -167,19 +165,13 @@ class ConsoleMenus {
     private static void deleteUserMenu(People res) throws RemoteException {
         System.out.println("¿Está seguro de que desea eliminar los datos? [y]/n");
         String option = scanner.nextLine();
-        switch (option) {
-            case "y": {
-                ClientApp.deleteUser(res);
-                mainMenu();
-            }
-            case "n": {
-                searchUserSubMenu(res);
-            }
-            default: {
-                ClientApp.deleteUser(res);
-                mainMenu();
-            }
+        if ("n".equals(option)) {
+            searchUserSubMenu(res);
         }
+        boolean successful = ClientApp.deleteUser(res);
+        if (successful) System.out.println("Operacion completada con exito");
+        if (!successful) System.out.println("Internal Server Error");
+        mainMenu();
     }
 
     private static String dniInput(String edit) {

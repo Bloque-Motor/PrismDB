@@ -29,7 +29,7 @@ public class ClientApp {
 //            }
 //        });
 
-        logger.info(SOURCE, "Starting Client");
+        logger.debug(SOURCE, "Starting Client");
         ConsoleMenus.mainMenu();
 
     }
@@ -58,7 +58,7 @@ public class ClientApp {
         return res;
     }
 
-    static void updateUser(String oldDni, People res) throws RemoteException {
+    static boolean updateUser(String oldDni, People res) throws RemoteException {
         logger.info(SOURCE, "Attempting to update the person " + oldDni + " with the following new data: " + res.getName() + " " + res.getSurname() + " " + res.getDni() + " " + res.getTelephone() + " " + res.getEmail());
 
 
@@ -66,35 +66,41 @@ public class ClientApp {
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
-            stub.updateUser(oldDni, res);
+            return stub.updateUser(oldDni, res);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return false;
     }
 
-    static void deleteUser(People res) throws RemoteException {
+    static boolean deleteUser(People res) throws RemoteException {
         logger.info(SOURCE, "Attempting to delete person " + res.getDni());
 
         Registry registry;
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
-            stub.deleteUser(res);
+            return stub.deleteUser(res);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return false;
     }
 
-    static void addUser(String name, String surname, String dni, String phone, String email) {
+    static boolean addUser(String name, String surname, String dni, String phone, String email) {
         logger.info(SOURCE, "Attempting to add new person with the following data: " + name + " " + surname + " " + dni + " " + phone + " " + email);
 
         Registry registry;
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
-            stub.addUser(name, surname, dni, phone, email);
+            return stub.addUser(name, surname, dni, phone, email);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return false;
     }
 }
