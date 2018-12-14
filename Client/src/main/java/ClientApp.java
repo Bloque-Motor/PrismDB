@@ -1,13 +1,19 @@
 import interfaces.People;
 import interfaces.Prism;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
+
 
 public class ClientApp {
+
+
+    private static final String SOURCE = "PrismDB Client";
+    private static final Logger logger = LogManager.getLogger(ClientApp.class);
 
     public static void main(String[] args) {
 
@@ -21,6 +27,8 @@ public class ClientApp {
 //                gui.setVisible(true);
 //            }
 //        });
+
+        logger.info(SOURCE, "Starting Client");
         ConsoleMenus.mainMenu();
 
     }
@@ -34,20 +42,24 @@ public class ClientApp {
         if (!phone.equals("")) searchParam.put("phone", phone);
         if (!email.equals("")) searchParam.put("email", email);
 
+        logger.info(SOURCE, "Searching person with the following parameters: " + name + " " + surname + " " + dni + " " + phone + " " + email);
+
         Registry registry = null;
         People res = null;
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
             res = stub.searchUser(searchParam);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return res;
     }
 
-    public static void updateUser(String oldDni, String name, String surname, String dni, String phone, String email){
+    public static void updateUser(String oldDni, String name, String surname, String dni, String phone, String email) {
+        logger.info(SOURCE, "Attempting to update the person " + oldDni + " with the following new data: " + name + " " + surname + " " + dni + " " + phone + " " + email);
+
         Registry registry = null;
         try {
             registry = LocateRegistry.getRegistry();
@@ -58,7 +70,9 @@ public class ClientApp {
         }
     }
 
-    public static void deleteUser(String dni){
+    public static void deleteUser(String dni) {
+        logger.info(SOURCE, "Attempting to delete person " + dni);
+
         Registry registry = null;
         try {
             registry = LocateRegistry.getRegistry();
@@ -69,7 +83,9 @@ public class ClientApp {
         }
     }
 
-    public static void addUser(String name, String surname, String dni, String phone, String email){
+    public static void addUser(String name, String surname, String dni, String phone, String email) {
+        logger.info(SOURCE, "Attempting to add new person with the following data: " + name + " " + surname + " " + dni + " " + phone + " " + email);
+
         Registry registry = null;
         try {
             registry = LocateRegistry.getRegistry();
@@ -78,8 +94,5 @@ public class ClientApp {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public abstract class Person implements People {
     }
 }

@@ -10,10 +10,11 @@ class ConsoleMenus {
 
     static void mainMenu() {
 
-        System.out.println("////////// Welcome to PrismDB \\\\\\\\\\");
+        System.out.println("////////// Welcome to PrismDB \\\\\\\\\\\\\\\\\\\\");
         System.out.println("Seleccione una opción:");
         System.out.println("1. Añadir Persona \n2. Buscar Persona \n3. Exit");
         int option = scanner.nextInt();
+        scanner.nextLine();
         switch (option) {
             case 1: {
                 addUserMenu();
@@ -41,6 +42,8 @@ class ConsoleMenus {
         String email = emailInput(null);
 
         ClientApp.addUser(name, surname, dni, phone, email);
+
+        mainMenu();
     }
 
     private static void searchUserMenu() {
@@ -80,6 +83,7 @@ class ConsoleMenus {
             System.out.println("Seleccione una opción:");
             System.out.println("1. Editar Usuario \n2. Eliminar Usuario\n3.Menú Principal");
             int option = scanner.nextInt();
+            scanner.nextLine();
             switch (option) {
                 case 1: {
                     editUserMenu(oldDni);
@@ -99,6 +103,7 @@ class ConsoleMenus {
             System.out.println("Seleccione una opción:");
             System.out.println("1. Reintroducir Datos \n2. Menú Principal");
             int option = scanner.nextInt();
+            scanner.nextLine();
             switch (option) {
                 case 1: {
                     searchUserMenu();
@@ -173,10 +178,11 @@ class ConsoleMenus {
     private static String dniInput(String edit) {
         String dni;
         do {
-            System.out.println("Introduzca el" + edit + " dni: ");
+            if (edit != null) System.out.println("Introduzca el" + edit + " dni: ");
+            else System.out.println("Introduzca el dni: ");
             dni = scanner.nextLine();
-            if (!isDni(dni)) System.out.println("Formato de DNI incorrecto.");
-        } while (!isDni(dni));
+            if (isNotDni(dni)) System.out.println("Formato de DNI incorrecto.");
+        } while (isNotDni(dni));
 
         return dni;
     }
@@ -184,10 +190,11 @@ class ConsoleMenus {
     private static String phoneInput(String edit) {
         String phone;
         do {
-            System.out.println("Introduzca el" + edit + " teléfono: ");
+            if (edit != null) System.out.println("Introduzca el" + edit + " teléfono: ");
+            else System.out.println("Introduzca el teléfono: ");
             phone = scanner.nextLine();
-            if (!isTelephone(phone)) System.out.println("Formato de teléfono incorrecto.");
-        } while (!isTelephone(phone));
+            if (isNotTelephone(phone)) System.out.println("Formato de teléfono incorrecto.");
+        } while (isNotTelephone(phone));
 
         return phone;
     }
@@ -195,26 +202,27 @@ class ConsoleMenus {
     private static String emailInput(String edit) {
         String email;
         do {
-            System.out.println("Introduzca el" + edit + " e-mail: ");
+            if (edit != null) System.out.println("Introduzca el" + edit + " e-mail: ");
+            else System.out.println("Introduzca el e-mail: ");
             email = scanner.nextLine();
-            if (!isEmail(email)) System.out.println("Formato de e-mail incorrecto.");
-        } while (!isEmail(email));
+            if (isNotEmail(email)) System.out.println("Formato de e-mail incorrecto.");
+        } while (isNotEmail(email));
 
         return email;
     }
 
-    private static boolean isDni(String dni) {
+    private static boolean isNotDni(String dni) {
         String pattern = "[0-9]{7,8}(\\s*-?\\s*)?[A-Za-z]";
-        return dni.matches(pattern);
+        return !dni.matches(pattern);
     }
 
-    private static boolean isEmail(String email) {
-        String pattern = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
-        return email.matches(pattern);
+    private static boolean isNotEmail(String email) {
+        String pattern = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])";
+        return !email.matches(pattern);
     }
 
-    private static boolean isTelephone(String telephone) {
+    private static boolean isNotTelephone(String telephone) {
         String pattern = "(\\+(0[1-9][0-9]?|[1-9][0-9]{0,2}))?\\s*[1-9]{3}\\s*[0-9]{3}\\s*[0-9]{3}";
-        return telephone.matches(pattern);
+        return !telephone.matches(pattern);
     }
 }
