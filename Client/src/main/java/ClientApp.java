@@ -33,7 +33,7 @@ public class ClientApp {
 
     }
 
-    public static People search(String name, String surname, String dni, String phone, String email) {
+    static People search(String name, String surname, String dni, String phone, String email) {
         Map<String, String> searchParam = new HashMap<>();
 
         if (!name.equals("")) searchParam.put("name", name);
@@ -44,7 +44,7 @@ public class ClientApp {
 
         logger.info(SOURCE, "Searching person with the following parameters: " + name + " " + surname + " " + dni + " " + phone + " " + email);
 
-        Registry registry = null;
+        Registry registry;
         People res = null;
         try {
             registry = LocateRegistry.getRegistry();
@@ -57,10 +57,10 @@ public class ClientApp {
         return res;
     }
 
-    public static void updateUser(String oldDni, String name, String surname, String dni, String phone, String email) {
+    static void updateUser(String oldDni, String name, String surname, String dni, String phone, String email) {
         logger.info(SOURCE, "Attempting to update the person " + oldDni + " with the following new data: " + name + " " + surname + " " + dni + " " + phone + " " + email);
 
-        Registry registry = null;
+        Registry registry;
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
@@ -70,10 +70,10 @@ public class ClientApp {
         }
     }
 
-    public static void deleteUser(String dni) {
+    static void deleteUser(String dni) {
         logger.info(SOURCE, "Attempting to delete person " + dni);
 
-        Registry registry = null;
+        Registry registry;
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
@@ -83,10 +83,10 @@ public class ClientApp {
         }
     }
 
-    public static void addUser(String name, String surname, String dni, String phone, String email) {
+    static void addUser(String name, String surname, String dni, String phone, String email) {
         logger.info(SOURCE, "Attempting to add new person with the following data: " + name + " " + surname + " " + dni + " " + phone + " " + email);
 
-        Registry registry = null;
+        Registry registry;
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
