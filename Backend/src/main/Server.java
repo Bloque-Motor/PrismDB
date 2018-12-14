@@ -10,7 +10,7 @@ public class Server extends PrismImp {
     public static void main(String args[]) {
         try {
             // Instantiating the implementation class
-            PrismImp obj = new PrismImp();
+            Prism obj = new PrismImp();
 
             // Exporting the object of implementation class (here we are exporting the remote object to the stub)
             Prism stub = (Prism) UnicastRemoteObject.exportObject(obj, 0);
