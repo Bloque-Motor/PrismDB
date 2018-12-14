@@ -1,5 +1,5 @@
-import interfaces.People;
-import interfaces.Prism;
+import Interfaces.People;
+import Interfaces.Prism;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

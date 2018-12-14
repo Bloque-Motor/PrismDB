@@ -1,4 +1,4 @@
-import interfaces.People;
+import Interfaces.People;
 
 import java.rmi.RemoteException;
 import java.util.Scanner;

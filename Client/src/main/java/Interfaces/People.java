@@ -1,4 +1,4 @@
-package interfaces;
+package Interfaces;
 
 public interface People extends java.rmi.Remote {
 
