@@ -16,6 +16,7 @@ public class Server extends PrismImp {
             Prism stub = (Prism) UnicastRemoteObject.exportObject(obj, 0);
 
             // Binding the remote object (stub) in the registry
+            LocateRegistry.createRegistry(1099);
             Registry registry = LocateRegistry.getRegistry();
 
             registry.bind("Prism", stub);
