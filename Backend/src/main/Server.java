@@ -7,6 +7,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class Server extends PrismImp {
 
     public Server() {}
+
     public static void main(String args[]) {
         try {
             // Instantiating the implementation class
@@ -26,5 +27,4 @@ public class Server extends PrismImp {
             e.printStackTrace();
         }
     }
-
 }

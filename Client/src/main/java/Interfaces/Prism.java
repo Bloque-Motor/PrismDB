@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface Prism extends Remote {
 
-    boolean addUser(String name, String surname, String dni, String email, String phone) throws RemoteException;
+    boolean addUser(String dni, String name, String surname, String email, String phone) throws RemoteException;
 
     People searchUser(Map params) throws RemoteException;
 

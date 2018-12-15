@@ -31,10 +31,9 @@ public class ClientApp {
 
         logger.info("Starting Client");
         ConsoleMenus.mainMenu();
-
     }
 
-    static People search(String name, String surname, String dni, String phone, String email) {
+    static People search(String dni, String name, String surname, String phone, String email) {
         Map<String, String> searchParam = new HashMap<>();
 
         if (!name.equals("")) searchParam.put("name", name);
@@ -60,7 +59,6 @@ public class ClientApp {
 
     static boolean updateUser(String oldDni, People res) throws RemoteException {
         logger.info("Attempting to update the person " + oldDni + " with the following new data: " + res.getName() + " " + res.getSurname() + " " + res.getDni() + " " + res.getTelephone() + " " + res.getEmail());
-
 
         Registry registry;
         try {
