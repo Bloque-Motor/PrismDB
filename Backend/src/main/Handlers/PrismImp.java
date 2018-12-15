@@ -11,8 +11,8 @@ public class PrismImp implements Prism {
 
     public PrismImp(){}
 
-    public boolean addUser(String name, String surname, String dni, String email, String phone) throws RemoteException {
-        return Database.addUser(new Person(name, surname, dni, phone, email));
+    public boolean addUser(String dni, String name, String surname, String email, String phone) throws RemoteException {
+        return Database.addUser(new Person(dni, name, surname, phone, email));
     }
 
     public People searchUser(Map params) throws RemoteException {

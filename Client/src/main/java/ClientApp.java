@@ -1,7 +1,7 @@
 import Interfaces.People;
 import Interfaces.Prism;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -14,7 +14,7 @@ public class ClientApp {
 
 
     //private static final String SOURCE = "PrismDB Client";
-    private static final Logger logger = LogManager.getLogger(ClientApp.class);
+    //private static final Logger logger = LogManager.getLogger(ClientApp.class);
 
     public static void main(String[] args) throws RemoteException {
 
@@ -29,12 +29,11 @@ public class ClientApp {
 //            }
 //        });
 
-        logger.info("Starting Client");
+        //logger.info("Starting Client");
         ConsoleMenus.mainMenu();
-
     }
 
-    static People search(String name, String surname, String dni, String phone, String email) {
+    static People search(String dni, String name, String surname, String phone, String email) {
         Map<String, String> searchParam = new HashMap<>();
 
         if (!name.equals("")) searchParam.put("name", name);
@@ -43,7 +42,7 @@ public class ClientApp {
         if (!phone.equals("")) searchParam.put("phone", phone);
         if (!email.equals("")) searchParam.put("email", email);
 
-        logger.info("Searching person with the following parameters: " + name + " " + surname + " " + dni + " " + phone + " " + email);
+        //logger.info("Searching person with the following parameters: " + name + " " + surname + " " + dni + " " + phone + " " + email);
 
         Registry registry;
         People res = null;
@@ -59,8 +58,7 @@ public class ClientApp {
     }
 
     static boolean updateUser(String oldDni, People res) throws RemoteException {
-        logger.info("Attempting to update the person " + oldDni + " with the following new data: " + res.getName() + " " + res.getSurname() + " " + res.getDni() + " " + res.getTelephone() + " " + res.getEmail());
-
+        //logger.info("Attempting to update the person " + oldDni + " with the following new data: " + res.getName() + " " + res.getSurname() + " " + res.getDni() + " " + res.getTelephone() + " " + res.getEmail());
 
         Registry registry;
         try {
@@ -75,7 +73,7 @@ public class ClientApp {
     }
 
     static boolean deleteUser(People res) throws RemoteException {
-        logger.info("Attempting to delete person " + res.getDni());
+        //logger.info("Attempting to delete person " + res.getDni());
 
         Registry registry;
         try {
@@ -90,7 +88,7 @@ public class ClientApp {
     }
 
     static boolean addUser(String name, String surname, String dni, String phone, String email) {
-        logger.info("Attempting to add new person with the following data: " + name + " " + surname + " " + dni + " " + phone + " " + email);
+        //logger.info("Attempting to add new person with the following data: " + name + " " + surname + " " + dni + " " + phone + " " + email);
 
         Registry registry;
         try {

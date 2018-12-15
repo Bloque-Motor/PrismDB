@@ -7,7 +7,6 @@ class ConsoleMenus {
 
     private static Scanner scanner = new Scanner(System.in);
 
-
     static void mainMenu() throws RemoteException {
 
         System.out.println("////////// Welcome to PrismDB \\\\\\\\\\\\\\\\\\\\");
@@ -18,15 +17,17 @@ class ConsoleMenus {
         switch (option) {
             case 1: {
                 addUserMenu();
+                break;
             }
             case 2: {
                 searchUserMenu();
+                break;
             }
             case 3: {
                 System.exit(0);
             }
             default: {
-                System.out.println("Error");
+                System.out.println("Error: Unknown option '"+option+"'");
                 mainMenu();
             }
         }
@@ -41,7 +42,7 @@ class ConsoleMenus {
         String phone = phoneInput(null);
         String email = emailInput(null);
 
-        boolean res = ClientApp.addUser(name, surname, dni, phone, email);
+        boolean res = ClientApp.addUser(dni, name, surname, phone, email);
 
         if (res) System.out.println("Operacion completada con exito");
         if (!res) System.out.println("Internal Server Error");
@@ -61,19 +62,20 @@ class ConsoleMenus {
         System.out.println("Introduzca un e-mail: ");
         String email = scanner.nextLine();
 
-        People res = ClientApp.search(name, surname, dni, phone, email);
+        People res = ClientApp.search(dni, name, surname, phone, email);
         //String oldDni = null;
 
         if (res == null) System.out.println("Sin resultados.");
         else {
             try {
-                System.out.println("Nombre: " + res.getName());
-                System.out.println("Apellidos: " + res.getSurname());
+                System.out.println("Nombre(s): " + res.getName());
+                System.out.println("Apellido(s): " + res.getSurname());
                 System.out.println("DNI: " + res.getDni());
                 //oldDni = res.getDni();
                 System.out.println("Teléfono: " + res.getTelephone());
                 System.out.println("E-mail: " + res.getEmail());
             } catch (RemoteException e) {
+                System.out.println(e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -90,15 +92,18 @@ class ConsoleMenus {
             switch (option) {
                 case 1: {
                     editUserMenu(res);
+                    break;
                 }
                 case 2: {
                     deleteUserMenu(res);
+                    break;
                 }
                 case 3: {
                     mainMenu();
+                    break;
                 }
                 default: {
-                    System.out.println("Error");
+                    System.out.println("Error: Unknown option '"+option+"'");
                     searchUserSubMenu(res);
                 }
             }
@@ -110,12 +115,14 @@ class ConsoleMenus {
             switch (option) {
                 case 1: {
                     searchUserMenu();
+                    break;
                 }
                 case 2: {
                     mainMenu();
+                    break;
                 }
                 default: {
-                    System.out.println("Error");
+                    System.out.println("Error: Unknown option '"+option+"'");
                     searchUserSubMenu(null);
                 }
             }
@@ -140,13 +147,15 @@ class ConsoleMenus {
         res.setTelephone(data[3]);
         res.setEmail(data[4]);
 
-
-        if ("n".equals(option)) {
-            editUserMenu(res);
+        switch (option.toLowerCase()) {
+            case "n":
+            case "no": {
+                editUserMenu(res);
+            }
         }
         boolean successful = ClientApp.updateUser(oldDni, res);
         if (successful) System.out.println("Operacion completada con exito");
-        if (!successful) System.out.println("Internal Server Error");
+        else System.out.println("Internal Server Error");
         mainMenu();
     }
 
@@ -165,12 +174,15 @@ class ConsoleMenus {
     private static void deleteUserMenu(People res) throws RemoteException {
         System.out.println("¿Está seguro de que desea eliminar los datos? [y]/n");
         String option = scanner.nextLine();
-        if ("n".equals(option)) {
-            searchUserSubMenu(res);
+        switch (option.toLowerCase()) {
+            case "n":
+            case "no": {
+                searchUserSubMenu(res);
+            }
         }
         boolean successful = ClientApp.deleteUser(res);
         if (successful) System.out.println("Operacion completada con exito");
-        if (!successful) System.out.println("Internal Server Error");
+        else System.out.println("Internal Server Error");
         mainMenu();
     }
 
@@ -210,18 +222,22 @@ class ConsoleMenus {
         return email;
     }
 
-    private static boolean isNotDni(String dni) {
+    static boolean isNotName(String name) {
+        return !(name.length() >= 3 && name.length() <= 50);
+    }
+
+    static boolean isNotDni(String dni) {
         String pattern = "[0-9]{7,8}(\\s*-?\\s*)?[A-Za-z]";
-        return !dni.matches(pattern);
+        return !(dni.length() >= 8 && dni.length() <= 11 && dni.matches(pattern));
     }
 
-    private static boolean isNotEmail(String email) {
-        String pattern = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])";
-        return !email.matches(pattern);
-    }
-
-    private static boolean isNotTelephone(String telephone) {
+    static boolean isNotTelephone(String telephone) {
         String pattern = "(\\+(0[1-9][0-9]?|[1-9][0-9]{0,2}))?\\s*[1-9]{3}\\s*[0-9]{3}\\s*[0-9]{3}";
-        return !telephone.matches(pattern);
+        return !(telephone.length() >= 9 && telephone.length() <= 15 && telephone.matches(pattern));
+    }
+
+    static boolean isNotEmail(String email) {
+        String pattern = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+        return !(email.length() >= 8 && email.length() <= 50 && email.matches(pattern));
     }
 }
