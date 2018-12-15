@@ -2,15 +2,11 @@ package Entities;
 
 import Interfaces.People;
 
-public class Person implements People {
+import java.io.Serializable;
 
-    public enum KeyType {
-        NAME,
-        SURNAME,
-        DNI,
-        TELEPHONE,
-        EMAIL
-    };
+public class Person implements People, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String dni;
     private String name;

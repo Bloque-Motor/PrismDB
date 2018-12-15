@@ -168,10 +168,10 @@ public class Database {
     public static People search(Map parameters) {
         if (parameters.size() == 0) return null;
 
-        Person user = null;
-        Iterator<Map.Entry<Person.KeyType, String>> it = parameters.entrySet().iterator();
-        Map.Entry<Person.KeyType, String> entry;
-        Person.KeyType ekey;
+        People user = null;
+        Iterator<Map.Entry<String, String>> it = parameters.entrySet().iterator();
+        Map.Entry<String, String> entry;
+        String ekey;
         String evalue, q = " SELECT * FROM " + dbname + ".users WHERE ";
         ArrayList<String> qattrs = new ArrayList<>();
         ArrayList<String> qvalues = new ArrayList<>();
@@ -182,23 +182,23 @@ public class Database {
             evalue = entry.getValue();
 
             switch (ekey) {
-                case NAME:
+                case "name":
                     qattrs.add("name = ?");
                     break;
 
-                case SURNAME:
+                case "surname":
                     qattrs.add("surname = ?");
                     break;
 
-                case DNI:
+                case "dni":
                     qattrs.add("dni = ?");
                     break;
 
-                case TELEPHONE:
+                case "phone":
                     qattrs.add("telephone = ?");
                     break;
 
-                case EMAIL:
+                case "email":
                     qattrs.add("email = ?");
                     break;
 
@@ -243,41 +243,6 @@ public class Database {
         return user;
     }
 
-    //NOT NECESSARY
-    /*public static Person[] getUsers() {
-        ArrayList<Person> userslist = new ArrayList<>(0);
-        String q = "SELECT * FROM " + dbname + ".users";
-
-        try {
-            connect();
-            ps = conn.prepareStatement(q);
-            rs = ps.executeQuery();
-            conn.commit();
-
-            while (rs.next()) {
-                String dni = rs.getString("dni");
-                String name = rs.getString("name");
-                String surname = rs.getString("surname");
-                String telephone = rs.getString("telephone");
-                String email = rs.getString("email");
-                Person user = new Person(name, surname, dni, telephone, email);
-                userslist.add(user);
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-            rollbackQuery();
-            return null;
-        }
-
-        if (autoDisconnect) {
-            disconnect();
-        }
-
-
-        return userslist.toArray(new Person[0]);
-    }
-*/
     public static void setAutoDisconnect(boolean autoDisconnect) {
         Database.autoDisconnect = autoDisconnect;
     }
