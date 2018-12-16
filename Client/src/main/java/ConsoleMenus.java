@@ -145,11 +145,11 @@ class ConsoleMenus {
         String oldDni = res.get(People.keyType.DNI);
 
         System.out.println("Estos son los nuevos datos: ");
-        System.out.println("Nombre: " + data[0]);
-        System.out.println("Apellidos: " + data[1]);
-        System.out.println("DNI: " + data[2]);
-        System.out.println("Teléfono: " + data[3]);
-        System.out.println("E-mail: " + data[4]);
+        System.out.println("Nombre: " + data[0] + "/" + res.get(People.keyType.NAME));
+        System.out.println("Apellidos: " + data[1] + "/" + res.get(People.keyType.SURNAME));
+        System.out.println("DNI: " + data[2] + "/" + res.get(People.keyType.DNI));
+        System.out.println("Teléfono: " + data[3] + "/" + res.get(People.keyType.PHONE));
+        System.out.println("E-mail: " + data[4] + "/" + res.get(People.keyType.EMAIL));
         System.out.println("¿Es correcto? [y]/n");
         String option = scanner.nextLine().toLowerCase();
 
