@@ -150,11 +150,12 @@ class ConsoleMenus {
         System.out.println("E-mail: " + data[4]);
         System.out.println("¿Es correcto? [y]/n");
         String option = scanner.nextLine().toLowerCase();
-        res.put(People.keyType.NAME, data[0]);
-        res.put(People.keyType.SURNAME, data[1]);
-        res.put(People.keyType.DNI, data[2]);
-        res.put(People.keyType.PHONE, data[3]);
-        res.put(People.keyType.EMAIL, data[4]);
+        if (!data[0].equals("")) res.put(People.keyType.NAME, data[0]);
+
+        if (!data[1].equals("")) res.put(People.keyType.SURNAME, data[1]);
+        if (!data[2].equals("")) res.put(People.keyType.DNI, data[2]);
+        if (!data[3].equals("")) res.put(People.keyType.PHONE, data[3]);
+        if (!data[4].equals("")) res.put(People.keyType.EMAIL, data[4]);
 
         if (option.equals("n") || option.equals("no")) editUserMenu(res);
 
@@ -190,7 +191,11 @@ class ConsoleMenus {
     private static String dniInput(String edit) {
         String dni;
         do {
-            if (edit != null) System.out.println("Introduzca el" + edit + " dni: ");
+            if (edit != null) {
+                System.out.println("Introduzca el" + edit + " dni: ");
+                dni = scanner.nextLine();
+                return dni;
+            }
             else System.out.println("Introduzca el dni: ");
             dni = scanner.nextLine();
             if (isNotDni(dni)) System.out.println("Formato de DNI incorrecto.");
