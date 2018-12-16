@@ -16,16 +16,18 @@ public class PrismImp implements Prism {
     }
 
     public ArrayList<Map<People.keyType, String>> searchUser(Map params) throws RemoteException {
-        ArrayList results = new ArrayList();
-        for (People person : Database.search(params)){
+        ArrayList<People> results = Database.search(params);
+        ArrayList<Map<People.keyType, String>> toClient = new ArrayList<>();
+        for (People person : results){
             Map<People.keyType, String> result = new HashMap<>();
             result.put(People.keyType.NAME, person.getName());
             result.put(People.keyType.SURNAME, person.getSurname());
             result.put(People.keyType.DNI, person.getDni());
             result.put(People.keyType.EMAIL, person.getEmail());
             result.put(People.keyType.PHONE, person.getTelephone());
+            toClient.add(result);
         }
-        return results;
+        return toClient;
     }
 
     public boolean deleteUser(Map<People.keyType, String> user) throws RemoteException {

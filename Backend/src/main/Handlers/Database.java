@@ -165,13 +165,13 @@ public class Database {
         return !error;
     }
 
-    public static ArrayList<People> search(Map parameters) {
+    public static ArrayList<People> search(Map<People.keyType, String> parameters) {
         if (parameters.size() == 0) return null;
 
         People user = null;
-        Iterator<Map.Entry<String, String>> it = parameters.entrySet().iterator();
-        Map.Entry<String, String> entry;
-        String ekey;
+        Iterator<Map.Entry<People.keyType, String>> it = parameters.entrySet().iterator();
+        Map.Entry<People.keyType, String> entry;
+        People.keyType ekey;
         String evalue, q = " SELECT * FROM " + dbname + ".users WHERE ";
         ArrayList<String> qattrs = new ArrayList<>();
         ArrayList<String> qvalues = new ArrayList<>();
@@ -182,23 +182,23 @@ public class Database {
             evalue = entry.getValue();
 
             switch (ekey) {
-                case "name":
+                case NAME:
                     qattrs.add("name = ?");
                     break;
 
-                case "surname":
+                case SURNAME:
                     qattrs.add("surname = ?");
                     break;
 
-                case "dni":
+                case DNI:
                     qattrs.add("dni = ?");
                     break;
 
-                case "phone":
+                case PHONE:
                     qattrs.add("telephone = ?");
                     break;
 
-                case "email":
+                case EMAIL:
                     qattrs.add("email = ?");
                     break;
 
@@ -216,7 +216,7 @@ public class Database {
             }
         }
 
-        ArrayList<People> results = new ArrayList<People>();
+        ArrayList<People> results = new ArrayList<>();
 
         try {
             connect();
