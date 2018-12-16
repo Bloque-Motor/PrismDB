@@ -68,8 +68,10 @@ class ConsoleMenus {
         //String oldDni = null;
 
         Map<People.keyType, String> aux = null;
-        if (res == null) System.out.println("Sin resultados.");
-        else {
+        if (res == null || res.isEmpty()) {
+            System.out.println("Sin resultados.");
+            mainMenu();
+        } else {
             int i = 1;
             for (Map<People.keyType, String> var : res) {
                 System.out.println("Resultado " + i);
