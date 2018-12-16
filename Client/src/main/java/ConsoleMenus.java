@@ -29,7 +29,7 @@ class ConsoleMenus {
                 System.exit(0);
             }
             default: {
-                System.out.println("Error: Unknown option '"+option+"'");
+                System.out.println("Error: Unknown option '" + option + "'");
                 mainMenu();
             }
         }
@@ -114,7 +114,7 @@ class ConsoleMenus {
                     break;
                 }
                 default: {
-                    System.out.println("Error: Unknown option '"+option+"'");
+                    System.out.println("Error: Unknown option '" + option + "'");
                     searchUserSubMenu(res);
                 }
             }
@@ -133,7 +133,7 @@ class ConsoleMenus {
                     break;
                 }
                 default: {
-                    System.out.println("Error: Unknown option '"+option+"'");
+                    System.out.println("Error: Unknown option '" + option + "'");
                     searchUserSubMenu(null);
                 }
             }
@@ -152,8 +152,8 @@ class ConsoleMenus {
         System.out.println("E-mail: " + data[4]);
         System.out.println("¿Es correcto? [y]/n");
         String option = scanner.nextLine().toLowerCase();
-        if (!data[0].equals("")) res.put(People.keyType.NAME, data[0]);
 
+        if (!data[0].equals("")) res.put(People.keyType.NAME, data[0]);
         if (!data[1].equals("")) res.put(People.keyType.SURNAME, data[1]);
         if (!data[2].equals("")) res.put(People.keyType.DNI, data[2]);
         if (!data[3].equals("")) res.put(People.keyType.PHONE, data[3]);
@@ -197,8 +197,7 @@ class ConsoleMenus {
                 System.out.println("Introduzca el" + edit + " dni: ");
                 dni = scanner.nextLine();
                 return dni;
-            }
-            else System.out.println("Introduzca el dni: ");
+            } else System.out.println("Introduzca el dni: ");
             dni = scanner.nextLine();
             if (isNotDni(dni)) System.out.println("Formato de DNI incorrecto.");
         } while (isNotDni(dni));
@@ -209,8 +208,11 @@ class ConsoleMenus {
     private static String phoneInput(String edit) {
         String phone;
         do {
-            if (edit != null) System.out.println("Introduzca el" + edit + " teléfono: ");
-            else System.out.println("Introduzca el teléfono: ");
+            if (edit != null) {
+                System.out.println("Introduzca el" + edit + " teléfono: ");
+                phone = scanner.nextLine();
+                return phone;
+            } else System.out.println("Introduzca el teléfono: ");
             phone = scanner.nextLine();
             if (isNotTelephone(phone)) System.out.println("Formato de teléfono incorrecto.");
         } while (isNotTelephone(phone));
@@ -221,8 +223,11 @@ class ConsoleMenus {
     private static String emailInput(String edit) {
         String email;
         do {
-            if (edit != null) System.out.println("Introduzca el" + edit + " e-mail: ");
-            else System.out.println("Introduzca el e-mail: ");
+            if (edit != null) {
+                System.out.println("Introduzca el" + edit + " e-mail: ");
+                email = scanner.nextLine();
+                return email;
+            } else System.out.println("Introduzca el e-mail: ");
             email = scanner.nextLine();
             if (isNotEmail(email)) System.out.println("Formato de e-mail incorrecto.");
         } while (isNotEmail(email));
