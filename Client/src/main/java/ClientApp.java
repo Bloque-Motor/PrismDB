@@ -95,7 +95,13 @@ public class ClientApp {
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
-            return stub.addUser(name, surname, dni, phone, email);
+            Map<People.keyType, String> var = new HashMap<>();
+            var.put(People.keyType.NAME, name);
+            var.put(People.keyType.SURNAME, surname);
+            var.put(People.keyType.DNI, dni);
+            var.put(People.keyType.PHONE, phone);
+            var.put(People.keyType.EMAIL, email);
+            return stub.addUser(var);
         } catch (Exception e) {
             e.printStackTrace();
         }
