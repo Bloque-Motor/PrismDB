@@ -148,6 +148,7 @@ public class Database {
             conn.commit();
 
             error = (cs.getInt(1) != 0);
+            System.out.println("output is "+cs.getInt(1));
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

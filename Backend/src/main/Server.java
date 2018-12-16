@@ -1,3 +1,5 @@
+import Entities.Person;
+import Handlers.Database;
 import Handlers.PrismImp;
 import Interfaces.Prism;
 import java.rmi.registry.LocateRegistry;
@@ -10,7 +12,7 @@ public class Server extends PrismImp {
 
     public static void main(String args[]) {
         try {
-            // Instantiating the implementation class
+            /*// Instantiating the implementation class
             Prism obj = new PrismImp();
 
             // Exporting the object of implementation class (here we are exporting the remote object to the stub)
@@ -20,7 +22,13 @@ public class Server extends PrismImp {
             LocateRegistry.createRegistry(1099);
             Registry registry = LocateRegistry.getRegistry();
 
-            registry.bind("Prism", stub);
+            registry.bind("Prism", stub);*/
+
+            Database.updateUser("999000111 C",
+                    new Person("999999999X", "user1_nuevo" ,
+                            "surname1_nuevo", "+34999999999", "user1_nuevo@gmail.com" ));
+
+
             System.err.println("Server ready");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
