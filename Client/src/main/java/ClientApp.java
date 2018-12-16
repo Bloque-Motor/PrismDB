@@ -13,22 +13,9 @@ import java.util.Map;
 
 public class ClientApp {
 
-
-    //private static final String SOURCE = "PrismDB Client";
     private static final Logger logger = LogManager.getLogger(ClientApp.class);
 
     public static void main(String[] args) throws RemoteException {
-
-//        SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                ClientGUI gui = new ClientGUI();
-//                gui.setTitle("RMI Client");
-//                gui.setContentPane(new ClientGUI().panelMain);
-//                gui.setLocationRelativeTo(null);
-//                gui.setDefaultCloseOperation(ClientGUI.EXIT_ON_CLOSE);
-//                gui.setVisible(true);
-//            }
-//        });
 
         logger.info("Starting Client");
         ConsoleMenus.mainMenu();
