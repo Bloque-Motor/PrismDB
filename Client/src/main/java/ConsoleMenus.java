@@ -81,7 +81,7 @@ class ConsoleMenus {
                 System.out.println("DNI: " + var.get(People.keyType.DNI));
                 //oldDni = res.getDni();
                 System.out.println("Teléfono: " + var.get(People.keyType.PHONE));
-                System.out.println("E-mail: " + var.get(People.keyType.EMAIL));
+                System.out.println("E-mail: " + var.get(People.keyType.EMAIL + "\n"));
             }
 
             System.out.println("Seleccione un resultado: ");
