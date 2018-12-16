@@ -2,50 +2,50 @@
 
 This project consists of a server which connects to a MySQL database and a client which accesses said database through remote execution of server methods via the RMI library.
 
-##Overview
+## Overview
 
 The project consists of two independent modules: a server module named “Backend” and a client module named “Client”. Each module has its own Maven pom.xml file describing its internal dependencies and build configuration. 
 
-###Backend package
+### Backend package
 
 The server side of the project consists of the following components:
 
-####Interfaces
+#### Interfaces
 
 A People interface which defines the methods required by the program to handle all the data to be included in the database.
 
 A Prism interface which defines the methods which will be accessible to the client via RMI to access and manage the database.
 
-####Handlers
+#### Handlers
 
 A Database class which implements all the methods which interact directly with the MySQL database.
 
 A PrismImp which implements the methods from the Prism interface and will be the implementation used remotely by the client. Receives data from the client and formats it for its use on the Database class.
 
-####Entities
+#### Entities
 
 A Person class which implements the methods from the People interface and holds data for each instance of a person to be stored in the database.
 
-####Point of entry
+#### Point of entry
 
 The Server class contains the main method of the program and is in charge of initiating the RMI registry, instantiating the PrismImp class and listening for remote calls.
 
-###Client package
+### Client package
 
 The client consists of the following components: 
 
-#####Interfaces
+##### Interfaces
 
 Same interfaces as the server
 
-####Main Classes
+#### Main Classes
 
 A ClientApp class that handles the communication with the server and the main methods.
 
 A ConsoleMenu class that provides an interface through console to print the data and interact with it.
 
 
-##Requisites fulfilled
+## Requisites fulfilled
 
 All basic functionality works as intended. Users can add people to the database, delete people from it and search the database using any combination of parameters desired.
 
