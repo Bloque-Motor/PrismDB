@@ -1,3 +1,5 @@
+import Entities.Person;
+import Handlers.Database;
 import Handlers.PrismImp;
 import Interfaces.Prism;
 import java.rmi.registry.LocateRegistry;
@@ -21,6 +23,7 @@ public class Server extends PrismImp {
             Registry registry = LocateRegistry.getRegistry();
 
             registry.bind("Prism", stub);
+
             System.err.println("Server ready");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
