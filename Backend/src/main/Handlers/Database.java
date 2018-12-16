@@ -165,7 +165,7 @@ public class Database {
         return !error;
     }
 
-    public static People search(Map parameters) {
+    public static ArrayList<People> search(Map parameters) {
         if (parameters.size() == 0) return null;
 
         People user = null;
@@ -216,6 +216,8 @@ public class Database {
             }
         }
 
+        ArrayList<People> results = new ArrayList<People>();
+
         try {
             connect();
             ps = conn.prepareStatement(q);
@@ -234,13 +236,14 @@ public class Database {
                 String telephone = rs.getString("telephone");
                 String email = rs.getString("email");
                 user = new Person(dni, name, surname, telephone, email);
+                results.add(user);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
 
-        return user;
+        return results;
     }
 
     public static void setAutoDisconnect(boolean autoDisconnect) {
