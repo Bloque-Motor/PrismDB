@@ -53,7 +53,7 @@ delimiter ;
 -- Update User Procedures --
 ----------------------------
 
-DROP PROCEDURE IF EXISTS prismdb.updatename;
+DROP PROCEDURE IF EXISTS prismdb.updateuser;
 delimiter //
 CREATE PROCEDURE prismdb.updateuser(OUT exitstatus INTEGER,
   IN olddni VARCHAR(11),
