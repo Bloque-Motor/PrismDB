@@ -44,7 +44,7 @@ class ConsoleMenus {
         String phone = phoneInput(null);
         String email = emailInput(null);
 
-        boolean res = ClientApp.addUser(dni, name, surname, phone, email);
+        boolean res = ClientApp.addUser(name, surname, dni, phone, email);
 
         if (res) System.out.println("Operacion completada con exito");
         if (!res) System.out.println("Internal Server Error");
