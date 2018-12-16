@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,19 +34,19 @@ public class ClientApp {
         ConsoleMenus.mainMenu();
     }
 
-    static People search(String dni, String name, String surname, String phone, String email) {
-        Map<String, String> searchParam = new HashMap<>();
+    static ArrayList<Map<People.keyType, String>> search(String dni, String name, String surname, String phone, String email) {
+        Map<People.keyType, String> searchParam = new HashMap<>();
 
-        if (!name.equals("")) searchParam.put("name", name);
-        if (!surname.equals("")) searchParam.put("surname", surname);
-        if (!dni.equals("")) searchParam.put("dni", dni);
-        if (!phone.equals("")) searchParam.put("phone", phone);
-        if (!email.equals("")) searchParam.put("email", email);
+        if (!name.equals("")) searchParam.put(People.keyType.NAME, name);
+        if (!surname.equals("")) searchParam.put(People.keyType.SURNAME, surname);
+        if (!dni.equals("")) searchParam.put(People.keyType.DNI, dni);
+        if (!phone.equals("")) searchParam.put(People.keyType.PHONE, phone);
+        if (!email.equals("")) searchParam.put(People.keyType.EMAIL, email);
 
         logger.info("Searching person with the following parameters: " + name + " " + surname + " " + dni + " " + phone + " " + email);
 
         Registry registry;
-        People res = null;
+        ArrayList<Map<People.keyType, String>> res = null;
         try {
             registry = LocateRegistry.getRegistry();
             Prism stub = (Prism) registry.lookup("Prism");
@@ -57,8 +58,8 @@ public class ClientApp {
         return res;
     }
 
-    static boolean updateUser(String oldDni, People res) throws RemoteException {
-        logger.info("Attempting to update the person " + oldDni + " with the following new data: " + res.getName() + " " + res.getSurname() + " " + res.getDni() + " " + res.getTelephone() + " " + res.getEmail());
+    static boolean updateUser(String oldDni, Map<People.keyType, String> res) {
+        logger.info("Attempting to update the person " + oldDni + " with the following new data: " + res.get(People.keyType.NAME) + " " + res.get(People.keyType.SURNAME) + " " + res.get(People.keyType.DNI) + " " + res.get(People.keyType.PHONE) + " " + res.get(People.keyType.EMAIL));
 
         Registry registry;
         try {
@@ -72,8 +73,8 @@ public class ClientApp {
         return false;
     }
 
-    static boolean deleteUser(People res) throws RemoteException {
-        logger.info("Attempting to delete person " + res.getDni());
+    static boolean deleteUser(Map<People.keyType, String> res) {
+        logger.info("Attempting to delete person " + res.get(People.keyType.DNI));
 
         Registry registry;
         try {
