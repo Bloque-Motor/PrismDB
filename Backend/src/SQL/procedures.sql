@@ -56,27 +56,29 @@ delimiter ;
 DROP PROCEDURE IF EXISTS prismdb.updatename;
 delimiter //
 CREATE PROCEDURE prismdb.updateuser(OUT exitstatus INTEGER,
-  IN userdni VARCHAR(11),
+  IN olddni VARCHAR(11),
   IN newdni VARCHAR(11),
   IN newname VARCHAR(50),
-  IN newusername VARCHAR(50),
+  IN newsurname VARCHAR(50),
   IN newtelephone VARCHAR(15),
   IN newemail VARCHAR(50))
 MODIFIES SQL DATA
 main:BEGIN
   SET exitstatus = -1;
-  IF userdni IS NULL OR CHAR_LENGTH(userdni) = 0 THEN
+  IF olddni IS NULL OR CHAR_LENGTH(olddni) = 0 THEN
+   SET exitstatus = 1;
    LEAVE main;
   END IF;
-  IF newdni IS NULL OR CHAR_LENGTH(newdni) = 0 THEN
+  IF olddni IS NULL OR CHAR_LENGTH(olddni) = 0 THEN
+   SET exitstatus = 1;
    LEAVE main;
   END IF;
 
   -- Update user
-  UPDATE prismdb.users SET name = newname, surname = newusername, telephone = newtelephone, email = newemail WHERE dni = userdni;
+  UPDATE prismdb.users SET name = newname, surname = newsurname, telephone = newtelephone, email = newemail WHERE dni = olddni;
   
-  IF newdni != userdni THEN
-   UPDATE prismdb.users SET dni = newdni WHERE dni = userdni;
+  IF newdni != olddni THEN
+   UPDATE prismdb.users SET dni = newdni WHERE dni = olddni;
   END IF;
 
   SET exitstatus = 0;
