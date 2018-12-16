@@ -15,11 +15,11 @@ public class Person implements People, Serializable {
     private String email;
 
     public Person(String dni, String name, String surname, String telephone, String email) {
-        this.dni = dni;
+        if(People.isDni(dni)) this.dni = dni;
         this.name = name;
         this.surname = surname;
-        this.telephone = telephone;
-        this.email = email;
+        if(People.isTelephone(telephone)) this.telephone = telephone;
+        if(People.isEmail(email)) this.email = email;
     }
 
     public String getName() {
