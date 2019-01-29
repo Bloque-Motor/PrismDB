@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 class ConsoleMenus {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     static void mainMenu() throws RemoteException {
 
@@ -247,7 +247,7 @@ class ConsoleMenus {
     }
 
     private static boolean isNotTelephone(String telephone) {
-        String pattern = "(\\+(0[1-9][0-9]?|[1-9][0-9]{0,2}))?\\s*[1-9]{3}\\s*[0-9]{3}\\s*[0-9]{3}";
+        String pattern = "(\\+(0[0-9][0-9]?|[0-9][0-9]{0,2}))?\\s*[0-9]{3}\\s*[0-9]{3}\\s*[0-9]{3}";
         return !(telephone.length() >= 9 && telephone.length() <= 15 && telephone.matches(pattern));
     }
 
