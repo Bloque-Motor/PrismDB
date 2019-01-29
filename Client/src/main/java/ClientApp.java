@@ -3,6 +3,7 @@ import Interfaces.Prism;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -14,10 +15,17 @@ import java.util.Map;
 public class ClientApp {
 
     private static final Logger logger = LogManager.getLogger(ClientApp.class);
+    private static Prism stub = null;
 
     public static void main(String[] args) throws RemoteException {
 
         logger.info("Starting Client");
+        Registry registry = LocateRegistry.getRegistry();
+        try {
+             stub = (Prism) registry.lookup("Prism");
+        } catch (NotBoundException e) {
+            logger.error(e);
+        }
         ConsoleMenus.mainMenu();
     }
 
@@ -32,14 +40,11 @@ public class ClientApp {
 
         logger.info("Searching person with the following parameters: " + name + " " + surname + " " + dni + " " + phone + " " + email);
 
-        Registry registry;
         ArrayList<Map<People.keyType, String>> res = null;
         try {
-            registry = LocateRegistry.getRegistry();
-            Prism stub = (Prism) registry.lookup("Prism");
             res = stub.searchUser(searchParam);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         return res;
@@ -48,13 +53,10 @@ public class ClientApp {
     static boolean updateUser(String oldDni, Map<People.keyType, String> res) {
         logger.info("Attempting to update the person " + oldDni + " with the following new data: " + res.get(People.keyType.NAME) + " " + res.get(People.keyType.SURNAME) + " " + res.get(People.keyType.DNI) + " " + res.get(People.keyType.PHONE) + " " + res.get(People.keyType.EMAIL));
 
-        Registry registry;
         try {
-            registry = LocateRegistry.getRegistry();
-            Prism stub = (Prism) registry.lookup("Prism");
             return stub.updateUser(oldDni, res);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         return false;
@@ -63,13 +65,10 @@ public class ClientApp {
     static boolean deleteUser(Map<People.keyType, String> res) {
         logger.info("Attempting to delete person " + res.get(People.keyType.DNI));
 
-        Registry registry;
         try {
-            registry = LocateRegistry.getRegistry();
-            Prism stub = (Prism) registry.lookup("Prism");
             return stub.deleteUser(res);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         return false;
@@ -78,10 +77,7 @@ public class ClientApp {
     static boolean addUser(String name, String surname, String dni, String phone, String email) {
         logger.info("Attempting to add new person with the following data: " + name + " " + surname + " " + dni + " " + phone + " " + email);
 
-        Registry registry;
         try {
-            registry = LocateRegistry.getRegistry();
-            Prism stub = (Prism) registry.lookup("Prism");
             Map<People.keyType, String> var = new HashMap<>();
             var.put(People.keyType.NAME, name);
             var.put(People.keyType.SURNAME, surname);
@@ -90,7 +86,7 @@ public class ClientApp {
             var.put(People.keyType.EMAIL, email);
             return stub.addUser(var);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         return false;
