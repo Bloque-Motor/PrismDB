@@ -83,7 +83,6 @@ Make sure to have the server running before executing the client.
 
 * **Ignacio de las Alas-Pumariño Martínez** - *SCRUM Master and Developer*- [i.dmartinez-SM](https://redes.ls.fi.upm.es/i.dmartinez-SM)
 
-* **Daniel Roblero Vaz** - *Developer*- [daniel.roblero.vaz-D](https://redes.ls.fi.upm.es/daniel.roblero.vaz-D)
  
 
 
